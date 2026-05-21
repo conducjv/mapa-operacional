@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Painel Operacional</title>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+        #map {
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="map"></div>
+
+<script>
+
+// ======================================
+// MAPA PRINCIPAL
+// ======================================
+
+var map = L.map('map').setView([39.13923884350597, -0.31092408194865745], 10);
+
+
+// ======================================
+// CAPA SATELITAL
+// ======================================
+
+L.tileLayer(
+'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+{
+    maxZoom: 50
+}).addTo(map);
+
+
+// ======================================
+// LEER PARÁMETROS QR
+// ======================================
+
+const params = new URLSearchParams(window.location.search);
+
+const equipoQR = params.get("equip");
+
+const salaQR = params.get("sala");
+
+
+
+
+// ======================================
+// FUNCIÓN ABRIR EQUIPO
+// ======================================
+
+function abrirEquipoP101() {
+
+    marker1.openPopup();
+
+
+}
+
+// ======================================
+// QR EQUIPO P101
+// ======================================
+
+
+if (equipoQR === "P101") {
+
+    map.setView(
+        [39.17525299251499, -0.2730448298564689],
+        20
+    );
+
+    setTimeout(function() {
+
+        marker1.openPopup();
+
+    }, 1000);
+
+}
+
+
+// ======================================
+// ARMARIO ELÉCTRICO A
+// ======================================
+
+var sala1 = L.marker([39.17523737845108, -0.2727694618862366]).addTo(map);
+
+sala1.bindPopup(`
+
+<h2>ARMARIO ELÉCTRICO A</h2>
+
+<p>
+Área de equipamientos eléctricos
+</p>
+
+<hr>
+
+<h3>EPIs Obligatorios</h3>
+
+<ul>
+<li>Casco</li>
+<li>Gafas de protección</li>
+<li>Guantes aislantes</li>
+<li>Protección auditiva</li>
+</ul>
+
+<hr>
+
+<h3>Herramientas Necesarias</h3>
+
+<ul>
+<li>Multímetro CAT III</li>
+<li>Detector de tensión tipo bolígrafo</li>
+<li>Destornillador</li>
+</ul>
+
+<hr>
+
+<h3>Equipos</h3>
+
+<ul>
+
+<li>
+
+<a href="#"
+onclick="abrirEquipoP101()">
+
+P-101 - Bomba dosificadora
+
+</a>
+
+</li>
+
+<li>P-102</li>
+<li>VFD-01</li>
+
+</ul>
+
+<hr>
+
+<h3>Documentación</h3>
+
+<ul>
+
+<li>
+<a href="docs/LOTO.pdf" target="_blank">
+Procedimiento LOTO
+</a>
+</li>
+
+<li>
+<a href="docs/eletrico.pdf" target="_blank">
+Diagrama eléctrico
+</a>
+</li>
+
+</ul>
+
+`);
+
+
+// ======================================
+// QR SALA ELÉCTRICA
+// ======================================
+
+if (salaQR === "sala1") {
+
+    map.setView(
+        [39.17523737845108, -0.2727694618862366],
+        20
+    );
+
+    sala1.openPopup();
+
+}
+
+
+
+// ======================================
+// DOSIFICACIÓN DE HIPOCLORITO
+// ======================================
+
+var marker1 = L.marker([39.17525299251499, -0.2730448298564689]).addTo(map);
+
+marker1.bindPopup(`
+
+<h2>P-101</h2>
+
+<img src="img/pump.jpg" width="250">
+
+<p>Bombas dosificadoras de hipoclorito</p>
+
+<p>Status: Operando</p>
+
+<hr>
+
+<h3>Documentos</h3>
+
+<ul>
+
+<li>
+
+<a href="https://grupoelecnor-my.sharepoint.com/:b:/r/personal/rrodrigues_elecnor_es/Documents/ProyectoMapa/docs/985909-BA-SI-107-06-22-ES-Sigma-1-Basis-ES.pdf?csf=1&web=1&e=I9y4l6"
+
+
+target="_blank">
+
+Manual Técnico
+
+</a>
+</li>
+
+<li>
+<a href="docs/EBMarquesa.xlsx"
+target="_blank">
+
+Documento de proceso
+
+</a>
+</li>
+
+<li>
+<a href="docs/P101_manutencao.pdf"
+target="_blank">
+
+Plan de mantenimiento
+
+</a>
+</li>
+
+<li>
+<a href="docs/P101_contrato.pdf"
+target="_blank">
+
+Contrato de mantenimiento
+
+</a>
+</li>
+
+</ul>
+
+`);
+
+
+
+// ======================================
+// CELDAS MEDIA TENSIÓN
+// ======================================
+
+var marker2 = L.marker([38.76989783359616, -0.8823027058956755]).addTo(map);
+
+marker2.bindPopup(`
+
+<h2>TK-01</h2>
+
+<p>Celdas de media tensión - San Diego</p>
+
+<p>Status: Operando</p>
+
+`);
+
+
+
+// ======================================
+// BOMBAS EL PANSER
+// ======================================
+
+var marker3 = L.marker([39.13923884350597, -0.31092408194865745]).addTo(map);
+
+marker3.bindPopup(`
+
+<h2>F-201</h2>
+
+<p>Bombas El Panser</p>
+
+<p>Status: Operando</p>
+
+`);
+
+</script>
+
+
+
+
+
+</html>
