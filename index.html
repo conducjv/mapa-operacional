@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+
     <title>Painel Operacional</title>
 
     <link rel="stylesheet"
@@ -12,6 +17,19 @@
         #map {
             height: 100vh;
         }
+.leaflet-popup-content {
+
+    font-size: 18px;
+    line-height: 1.5;
+
+}
+
+.leaflet-popup-content img {
+
+    max-width: 100%;
+
+}
+
     </style>
 </head>
 
@@ -25,7 +43,17 @@
 // MAPA PRINCIPAL
 // ======================================
 
-var map = L.map('map').setView([39.13923884350597, -0.31092408194865745], 10);
+var map = L.map('map', {
+
+    tap: true,
+    touchZoom: true,
+    dragging: true,
+    doubleClickZoom: true,
+    scrollWheelZoom: true,
+    boxZoom: true,
+    keyboard: true
+
+}).setView([39.13923884350597, -0.31092408194865745], 10);
 
 
 // ======================================
@@ -163,7 +191,11 @@ Diagrama eléctrico
 
 </ul>
 
-`);
+`, {
+
+    maxWidth: 350
+
+});
 
 
 // ======================================
@@ -248,7 +280,11 @@ Contrato de mantenimiento
 
 </ul>
 
-`);
+`, {
+
+    maxWidth: 350
+
+});
 
 
 
