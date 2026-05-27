@@ -1,27 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
+
 <head>
 
+<meta charset="UTF-8">
+
 <meta name="viewport"
-content="width=device-width, initial-scale=0.75">
+content="width=device-width, initial-scale=1.0">
 
+<title>Painel Operacional</title>
 
-    <title>Painel Operacional</title>
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
-    <link rel="stylesheet"
-          href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<style>
 
-    <style>
-        #map {
-            height: 100vh;
-        }
+html,
+body {
+
+    margin: 0;
+    padding: 0;
+    height: 100%;
+
+}
+
+#map {
+
+    width: 100%;
+    height: 100vh;
+
+}
+
 .leaflet-popup-content {
 
-    width: 250px !important;
+    width: 260px !important;
 
-    max-height: 300px;
+    max-height: 350px;
 
     overflow-y: auto;
 
@@ -31,34 +47,30 @@ content="width=device-width, initial-scale=0.75">
 
 }
 
+.popup-img {
 
-/* IMAGENS RESPONSIVAS */
-
-.leaflet-popup-content img {
-
-    max-width: 100%;
-
-    height: auto;
+    width: 100%;
 
     border-radius: 8px;
 
-}
-
-        
-.leaflet-popup-content {
-
-    font-size: 16px;
-    line-height: 1.5;
+    margin-bottom: 10px;
 
 }
 
-.leaflet-popup-content img {
+.popup-qr {
 
-    max-width: 100%;
+    width: 100px;
+
+    display: block;
+
+    margin: auto;
+
+    margin-bottom: 10px;
 
 }
 
-    </style>
+</style>
+
 </head>
 
 <body>
@@ -67,37 +79,29 @@ content="width=device-width, initial-scale=0.75">
 
 <script>
 
-// ======================================
-// MAPA PRINCIPAL
-// ======================================
+// =====================================================
+// MAPA
+// =====================================================
 
-var map = L.map('map', {
+const map = L.map('map').setView(
+    [39.13923884350597, -0.31092408194865745],
+    10
+);
 
-    tap: true,
-    touchZoom: true,
-    dragging: true,
-    doubleClickZoom: true,
-    scrollWheelZoom: true,
-    boxZoom: true,
-    keyboard: true
-
-}).setView([39.13923884350597, -0.31092408194865745], 10);
-
-
-// ======================================
-// CAPA SATELITAL
-// ======================================
+// =====================================================
+// SATÉLITE
+// =====================================================
 
 L.tileLayer(
 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
 {
-    maxZoom: 50
+    maxZoom: 22
 }).addTo(map);
 
 
-// ======================================
-// LEER PARÁMETROS QR
-// ======================================
+// =====================================================
+// PARÁMETROS QR
+// =====================================================
 
 const params = new URLSearchParams(window.location.search);
 
@@ -106,51 +110,23 @@ const equipoQR = params.get("equip");
 const salaQR = params.get("sala");
 
 
+// =====================================================
+// SALA ELÉCTRICA
+// =====================================================
 
-
-// ======================================
-// FUNCIÓN ABRIR EQUIPO
-// ======================================
-
-function abrirEquipoP101() {
-
-    marker1.openPopup();
-
-
-}
-
-// ======================================
-// QR EQUIPO P101
-// ======================================
-
-
-if (equipoQR === "P101") {
-
-    map.setView(
-        [39.17525299251499, -0.2730448298564689],
-        20
-    );
-
-    setTimeout(function() {
-
-        marker1.openPopup();
-
-    }, 1000);
-
-}
-
-
-// ======================================
-// ARMARIO ELÉCTRICO A
-// ======================================
-
-var sala1 = L.marker([39.17523737845108, -0.2727694618862366]).addTo(map);
+const sala1 = L.marker([
+    39.17523737845108,
+    -0.2727694618862366
+]).addTo(map);
 
 sala1.bindPopup(`
 
+<div>
+
 <h2>ARMARIO ELÉCTRICO A</h2>
 
-<img src="img/qr_sala1.png" width="100">
+<img src="img/qr_sala1.png"
+class="popup-qr">
 
 <p>
 Área de equipamientos eléctricos
@@ -158,45 +134,12 @@ sala1.bindPopup(`
 
 <hr>
 
-<h3>EPIs Obligatorios</h3>
+<h3>EPIs</h3>
 
 <ul>
 <li>Casco</li>
-<li>Gafas de protección</li>
-<li>Guantes aislantes</li>
-<li>Protección auditiva</li>
-</ul>
-
-<hr>
-
-<h3>Herramientas Necesarias</h3>
-
-<ul>
-<li>Multímetro CAT III</li>
-<li>Detector de tensión tipo bolígrafo</li>
-<li>Destornillador</li>
-</ul>
-
-<hr>
-
-<h3>Equipos</h3>
-
-<ul>
-
-<li>
-
-<a href="#"
-onclick="abrirEquipoP101()">
-
-P-101 - Bomba dosificadora
-
-</a>
-
-</li>
-
-<li>P-102</li>
-<li>VFD-01</li>
-
+<li>Guantes</li>
+<li>Gafas</li>
 </ul>
 
 <hr>
@@ -206,228 +149,99 @@ P-101 - Bomba dosificadora
 <ul>
 
 <li>
-<a href="docs/LOTO.pdf" target="_blank">
-Procedimiento LOTO
-</a>
-</li>
+<a href="docs/LOTO.pdf"
+target="_blank">
 
-<li>
-<a href="docs/eletrico.pdf" target="_blank">
-Diagrama eléctrico
+LOTO
+
 </a>
 </li>
 
 </ul>
 
-`, {
+</div>
 
-    maxWidth: 350
-
-});
+`);
 
 
-// ======================================
-// QR SALA ELÉCTRICA
-// ======================================
+// =====================================================
+// QR SALA
+// =====================================================
 
 if (salaQR === "sala1") {
 
-    map.setView(
-        [39.17523737845108, -0.2727694618862366],
-        20
-    );
+    map.setView([
+        39.17523737845108,
+        -0.2727694618862366
+    ], 20);
 
     sala1.openPopup();
 
 }
 
 
-
-// ======================================
-// DOSIFICACIÓN DE HIPOCLORITO
-// ======================================
-
-var marker1 = L.marker([39.17525299251499, -0.2730448298564689]).addTo(map);
-
-marker1.bindPopup(`
-
-<h2>P-101</h2>
-
-<img src="img/qr_p101.png" width="100">
-
-<img src="img/pump.jpg" width="180">
-
-<p>Bombas dosificadoras de hipoclorito</p>
-
-<p>Status: Operando</p>
-
-<hr>
-
-<h3>Documentos</h3>
-
-<ul>
-
-<li>
-
-<a href="https://grupoelecnor-my.sharepoint.com/:b:/r/personal/rrodrigues_elecnor_es/Documents/ProyectoMapa/docs/985909-BA-SI-107-06-22-ES-Sigma-1-Basis-ES.pdf?csf=1&web=1&e=I9y4l6"
-target="_blank">
-
-Manual Técnico
-
-</a>
-</li>
-
-<li>
-<a href="https://grupoelecnor-my.sharepoint.com/:b:/r/personal/rrodrigues_elecnor_es/Documents/ProyectoMapa/docs/EBMarquesa.pdf?csf=1&web=1&e=t1BUfz"
-target="_blank">
-
-Documento de proceso
-
-</a>
-</li>
-
-<li>
-<a href="https://grupoelecnor-my.sharepoint.com/:b:/r/personal/rrodrigues_elecnor_es/Documents/ProyectoMapa/docs/ejemplo_AMFE.pdf?csf=1&web=1&e=AIi2xn"
-target="_blank">
-
-Ficha de equipos
-
-</a>
-</li>
-
-<li>
-<a href="https://grupoelecnor-my.sharepoint.com/:b:/r/personal/rrodrigues_elecnor_es/Documents/ProyectoMapa/docs/ejemplo_AMFE.pdf?csf=1&web=1&e=f0tkfc"
-target="_blank">
-
-Analise de Fallos
-
-</a>
-</li>
-
-<li>
-
-<a href="https://youtu.be/7EEzI0_tJkA?si=Q4Ncgo0tas44ryIZ"
-target="_blank">
-
-Video explicativo
-
-</a>
-</li>
-
-</ul>
-
-`, {
-
-    maxWidth: 350
-
-});
-
-
-
-// ======================================
-// CELDAS MEDIA TENSIÓN
-// ======================================
-
-var marker2 = L.marker([38.76989783359616, -0.8823027058956755]).addTo(map);
-
-marker2.bindPopup(`
-
-<h2>TK-01</h2>
-
-<p>Celdas de media tensión - San Diego</p>
-
-<p>Status: Operando</p>
-
-`);
-
-
-
-// ======================================
-// BOMBAS EL PANSER
-// ======================================
-
-var marker3 = L.marker([39.13923884350597, -0.31092408194865745]).addTo(map);
-
-marker3.bindPopup(`
-
-<h2>motor_5</h2>
-
-<p>Motor_5</p>
-
-<p>Status: Operando</p>
-<hr>
-
-<h3>Documentos</h3>
-
-<ul>
-
-<li>
-
-<a href="https://grupoelecnor-my.sharepoint.com/:b:/r/personal/rrodrigues_elecnor_es/Documents/ProyectoMapa/docs/468973838-Doc-Motor-Indar-ACP-560-X6-pdf.pdf
-?csf=1&web=1&e=t1BUfz"
-target="_blank">
-
-Manual Tecnico
-
-</a>
-</li>
-
-</ul>
-
-`, {
-
-    maxWidth: 350
-
-});
-
-
-// ======================================
-// CARGAR EQUIPOS JSON
-// ======================================
+// =====================================================
+// EQUIPOS JSON
+// =====================================================
 
 fetch('data/equipos.json')
 
-.then(response => response.json())
+.then(response => {
+
+    if (!response.ok) {
+
+        throw new Error(
+            "JSON no encontrado"
+        );
+
+    }
+
+    return response.json();
+
+})
 
 .then(equipos => {
 
-    console.log(equipos);
+    console.log("Equipos cargados:", equipos);
 
     equipos.forEach((equipo, index) => {
 
-        // =====================================
-        // PEQUENO DESLOCAMENTO AUTOMÁTICO
-        // =====================================
+        // =================================================
+        // DESPLAZAMIENTO AUTOMÁTICO
+        // =================================================
 
-        let offset = index * 0.00002;
+        let lat = Number(equipo.latitud);
 
-        let lat = equipo.latitud + offset;
+        let lon = Number(equipo.longitud);
 
-        let lon = equipo.longitud + offset;
+        // separa equipos sobrepostos
+        lat += (index % 5) * 0.00005;
 
-        // =====================================
+        lon += (index % 5) * 0.00005;
+
+        // =================================================
         // MARCADOR
-        // =====================================
+        // =================================================
 
-        var marker = L.marker([lat, lon]).addTo(map);
+        const marker = L.marker([lat, lon])
+        .addTo(map);
 
-        // =====================================
+        // =================================================
         // POPUP
-        // =====================================
+        // =================================================
 
         marker.bindPopup(`
 
-        <div style="width:250px">
+        <div>
 
-        <h2>${equipo.equipo}</h2>
+        <h2>${equipo.equipo || ""}</h2>
 
         ${
             equipo.foto_1
             ?
-            `<img src="${equipo.foto_1}"
-            style="width:100%;
-            border-radius:10px;
-            margin-bottom:10px;">`
+            `<img
+            src="${equipo.foto_1}"
+            class="popup-img">`
             :
             ""
         }
@@ -458,8 +272,14 @@ fetch('data/equipos.json')
         </p>
 
         <p>
+        <b>Potencia:</b>
+        ${equipo.potencia_kw || ""}
+        kW
+        </p>
+
+        <p>
         <b>Status:</b>
-        ${equipo.estado || "Operando"}
+        Operando
         </p>
 
         ${
@@ -483,6 +303,25 @@ fetch('data/equipos.json')
 
         `);
 
+        // =================================================
+        // QR AUTOMÁTICO
+        // =================================================
+
+        if (
+            equipoQR &&
+            equipoQR === equipo.equipo
+        ) {
+
+            map.setView([lat, lon], 20);
+
+            setTimeout(() => {
+
+                marker.openPopup();
+
+            }, 1000);
+
+        }
+
     });
 
 })
@@ -491,13 +330,13 @@ fetch('data/equipos.json')
 
     console.error(error);
 
+    alert(
+        "Error cargando JSON"
+    );
+
 });
 
-    
 </script>
 
-
-
-
-
+</body>
 </html>
