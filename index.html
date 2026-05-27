@@ -387,26 +387,33 @@ Manual Tecnico
 
 fetch('data/equipos.json')
 
-.then(response => {
-
-    console.log("STATUS:", response.status);
-
-    return response.json();
-
-})
+.then(response => response.json())
 
 .then(equipos => {
 
-    console.log("JSON carregado:", equipos);
+    console.log(equipos);
 
-    equipos.forEach(equipo => {
+    equipos.forEach((equipo, index) => {
 
-        console.log(equipo);
+        // =====================================
+        // PEQUENO DESLOCAMENTO AUTOMÁTICO
+        // =====================================
 
-        var marker = L.marker([
-            equipo.latitud,
-            equipo.longitud
-        ]).addTo(map);
+        let offset = index * 0.00002;
+
+        let lat = equipo.latitud + offset;
+
+        let lon = equipo.longitud + offset;
+
+        // =====================================
+        // MARCADOR
+        // =====================================
+
+        var marker = L.marker([lat, lon]).addTo(map);
+
+        // =====================================
+        // POPUP
+        // =====================================
 
         marker.bindPopup(`
 
@@ -418,12 +425,17 @@ fetch('data/equipos.json')
             equipo.foto_1
             ?
             `<img src="${equipo.foto_1}"
-            style="width:100%;border-radius:10px">`
+            style="width:100%;
+            border-radius:10px;
+            margin-bottom:10px;">`
             :
             ""
         }
 
-        <p>${equipo.descripcion || ""}</p>
+        <p>
+        <b>Descripción:</b><br>
+        ${equipo.descripcion || ""}
+        </p>
 
         <p>
         <b>Marca:</b>
@@ -441,6 +453,11 @@ fetch('data/equipos.json')
         </p>
 
         <p>
+        <b>Sala:</b>
+        ${equipo.sala || ""}
+        </p>
+
+        <p>
         <b>Status:</b>
         ${equipo.estado || "Operando"}
         </p>
@@ -454,7 +471,7 @@ fetch('data/equipos.json')
             <a href="${equipo.doc_tec}"
             target="_blank">
 
-            Manual Técnico
+            📄 Manual Técnico
 
             </a>
             `
@@ -472,11 +489,9 @@ fetch('data/equipos.json')
 
 .catch(error => {
 
-    console.error("ERROR:", error);
+    console.error(error);
 
 });
-
-
 
     
 </script>
