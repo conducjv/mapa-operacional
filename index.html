@@ -387,42 +387,94 @@ Manual Tecnico
 
 fetch('data/equipos.json')
 
-.then(response => response.json())
+.then(response => {
+
+    console.log("STATUS:", response.status);
+
+    return response.json();
+
+})
 
 .then(equipos => {
 
+    console.log("JSON carregado:", equipos);
+
     equipos.forEach(equipo => {
 
+        console.log(equipo);
+
         var marker = L.marker([
-            parseFloat(equipo.latitud),
-	    parseFloat(equipo.longitud)
+            equipo.latitud,
+            equipo.longitud
         ]).addTo(map);
 
         marker.bindPopup(`
 
-        <h2>${equipo["equipo"]}</h2>
+        <div style="width:250px">
 
-        <img src="${equipo.foto_1}" width="250">
+        <h2>${equipo.equipo}</h2>
 
-        <p>${equipo.descripcion}</p>
+        ${
+            equipo.foto_1
+            ?
+            `<img src="${equipo.foto_1}"
+            style="width:100%;border-radius:10px">`
+            :
+            ""
+        }
 
-        <p>Status: ${equipo.estado}</p>
+        <p>${equipo.descripcion || ""}</p>
 
-        <a href="${equipo.doc_tec}"
-        target="_blank">
+        <p>
+        <b>Marca:</b>
+        ${equipo.marca || ""}
+        </p>
 
-        Manual Técnico
+        <p>
+        <b>Modelo:</b>
+        ${equipo.modelo || ""}
+        </p>
 
-        </a>
+        <p>
+        <b>Ubicación:</b>
+        ${equipo.ubicacion || ""}
+        </p>
+
+        <p>
+        <b>Status:</b>
+        ${equipo.estado || "Operando"}
+        </p>
+
+        ${
+            equipo.doc_tec
+            ?
+            `
+            <hr>
+
+            <a href="${equipo.doc_tec}"
+            target="_blank">
+
+            Manual Técnico
+
+            </a>
+            `
+            :
+            ""
+        }
+
+        </div>
 
         `);
 
     });
 
+})
+
+.catch(error => {
+
+    console.error("ERROR:", error);
+
 });
-
-
-
 
 
 
