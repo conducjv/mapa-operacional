@@ -79,18 +79,20 @@ body {
 
 <script>
 
-// =====================================================
+<script>
+
+// ======================================
 // MAPA
-// =====================================================
+// ======================================
 
 const map = L.map('map').setView(
-    [39.13923884350597, -0.31092408194865745],
+    [39.1392, -0.3109],
     10
 );
 
-// =====================================================
+// ======================================
 // SATÉLITE
-// =====================================================
+// ======================================
 
 L.tileLayer(
 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -99,228 +101,42 @@ L.tileLayer(
 }).addTo(map);
 
 
-// =====================================================
-// PARÁMETROS QR
-// =====================================================
-
-const params = new URLSearchParams(window.location.search);
-
-const equipoQR = params.get("equip");
-
-const salaQR = params.get("sala");
-
-
-// =====================================================
-// SALA ELÉCTRICA
-// =====================================================
-
-const sala1 = L.marker([
-    39.17523737845108,
-    -0.2727694618862366
-]).addTo(map);
-
-sala1.bindPopup(`
-
-<div>
-
-<h2>ARMARIO ELÉCTRICO A</h2>
-
-<img src="img/qr_sala1.png"
-class="popup-qr">
-
-<p>
-Área de equipamientos eléctricos
-</p>
-
-<hr>
-
-<h3>EPIs</h3>
-
-<ul>
-<li>Casco</li>
-<li>Guantes</li>
-<li>Gafas</li>
-</ul>
-
-<hr>
-
-<h3>Documentación</h3>
-
-<ul>
-
-<li>
-<a href="docs/LOTO.pdf"
-target="_blank">
-
-LOTO
-
-</a>
-</li>
-
-</ul>
-
-</div>
-
-`);
-
-
-// =====================================================
-// QR SALA
-// =====================================================
-
-if (salaQR === "sala1") {
-
-    map.setView([
-        39.17523737845108,
-        -0.2727694618862366
-    ], 20);
-
-    sala1.openPopup();
-
-}
-
-
-// =====================================================
-// EQUIPOS JSON
-// =====================================================
+// ======================================
+// TESTE JSON
+// ======================================
 
 fetch('data/equipos.json')
 
-.then(response => {
+.then(response => response.json())
 
-    if (!response.ok) {
+.then(data => {
 
-        throw new Error(
-            "JSON no encontrado"
-        );
+    console.log(data);
 
-    }
+    data.forEach((equipo, i) => {
 
-    return response.json();
-
-})
-
-.then(equipos => {
-
-    console.log("Equipos cargados:", equipos);
-
-    equipos.forEach((equipo, index) => {
-
-        // =================================================
-        // DESPLAZAMIENTO AUTOMÁTICO
-        // =================================================
-
+        // coordenadas
         let lat = Number(equipo.latitud);
-
         let lon = Number(equipo.longitud);
 
-        // separa equipos sobrepostos
-        lat += (index % 5) * 0.00005;
+        // separação visual
+        lat += (i * 0.00005);
+        lon += (i * 0.00005);
 
-        lon += (index % 5) * 0.00005;
+        // marcador
+        let marker = L.marker([
+            lat,
+            lon
+        ]).addTo(map);
 
-        // =================================================
-        // MARCADOR
-        // =================================================
+        // popup SIMPLES
+        marker.bindPopup(
 
-        const marker = L.marker([lat, lon])
-        .addTo(map);
+            "<b>" + equipo.equipo + "</b><br>" +
 
-        // =================================================
-        // POPUP
-        // =================================================
+            equipo.descripcion
 
-        marker.bindPopup(`
-
-        <div>
-
-        <h2>${equipo.equipo || ""}</h2>
-
-        ${
-            equipo.foto_1
-            ?
-            `<img
-            src="${equipo.foto_1}"
-            class="popup-img">`
-            :
-            ""
-        }
-
-        <p>
-        <b>Descripción:</b><br>
-        ${equipo.descripcion || ""}
-        </p>
-
-        <p>
-        <b>Marca:</b>
-        ${equipo.marca || ""}
-        </p>
-
-        <p>
-        <b>Modelo:</b>
-        ${equipo.modelo || ""}
-        </p>
-
-        <p>
-        <b>Ubicación:</b>
-        ${equipo.ubicacion || ""}
-        </p>
-
-        <p>
-        <b>Sala:</b>
-        ${equipo.sala || ""}
-        </p>
-
-        <p>
-        <b>Potencia:</b>
-        ${equipo.potencia_kw || ""}
-        kW
-        </p>
-
-        <p>
-        <b>Status:</b>
-        Operando
-        </p>
-
-        ${
-            equipo.doc_tec
-            ?
-            `
-            <hr>
-
-            <a href="${equipo.doc_tec}"
-            target="_blank">
-
-            📄 Manual Técnico
-
-            </a>
-            `
-            :
-            ""
-        }
-
-        </div>
-
-        `);
-
-        // =================================================
-        // QR AUTOMÁTICO
-        // =================================================
-
-        if (
-            equipoQR &&
-            equipoQR === equipo.equipo
-        ) {
-
-            map.setView([lat, lon], 20);
-
-            setTimeout(() => {
-
-                marker.openPopup();
-
-            }, 1000);
-
-        }
+        );
 
     });
 
@@ -330,11 +146,11 @@ fetch('data/equipos.json')
 
     console.error(error);
 
-    alert(
-        "Error cargando JSON"
-    );
+    alert(error);
 
 });
+
+</script>
 
 </script>
 
