@@ -123,7 +123,7 @@ body {
 
 
 /* ===================================================== */
-/* CLUSTER */
+/* CLUSTER MOBILE */
 /* ===================================================== */
 
 .marker-cluster {
@@ -161,13 +161,13 @@ const map = L.map('map', {
 
     [39.1752, -0.2730],
 
-    18
+    17
 
 );
 
 
 // =====================================================
-// CAPA SATELITAL
+// SATÉLITE
 // =====================================================
 
 const satelliteLayer = L.tileLayer(
@@ -175,10 +175,25 @@ const satelliteLayer = L.tileLayer(
 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
 
 {
-    maxZoom: 22
+    maxZoom: 19
 }
 
 ).addTo(map);
+
+
+// =====================================================
+// OPEN STREET MAP
+// =====================================================
+
+const osmLayer = L.tileLayer(
+
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+
+{
+    maxZoom: 22
+}
+
+);
 
 
 // =====================================================
@@ -214,7 +229,9 @@ const overlayLayer = L.imageOverlay(
 
 const baseMaps = {
 
-    "Satélite": satelliteLayer
+    "Satélite": satelliteLayer,
+
+    "Mapa": osmLayer
 
 };
 
@@ -244,13 +261,13 @@ const markers = L.markerClusterGroup({
 
     zoomToBoundsOnClick: true,
 
-    disableClusteringAtZoom: 20
+    disableClusteringAtZoom: 18
 
 });
 
 
 // =====================================================
-// PARAMETROS QR
+// PARÂMETROS QR
 // =====================================================
 
 const params = new URLSearchParams(
@@ -341,7 +358,7 @@ if (salaQR === "sala1") {
         39.17523737845108,
         -0.2727694618862366
 
-    ], 21);
+    ], 19);
 
     sala1.openPopup();
 
@@ -382,7 +399,7 @@ fetch('data/equipos.json')
     equipos.forEach(eq => {
 
         // =================================================
-        // COORDENADAS
+        // VALIDAR COORDENADAS
         // =================================================
 
         let lat = Number(eq.latitud);
@@ -544,7 +561,7 @@ fetch('data/equipos.json')
 
 
         // =================================================
-        // CLUSTER
+        // ADICIONAR AO CLUSTER
         // =================================================
 
         markers.addLayer(marker);
@@ -566,7 +583,7 @@ fetch('data/equipos.json')
                 lat,
                 lon
 
-            ], 21);
+            ], 19);
 
             setTimeout(() => {
 
@@ -580,7 +597,7 @@ fetch('data/equipos.json')
 
 
     // =================================================
-    // ADICIONAR CLUSTER
+    // ADICIONAR CLUSTER AO MAPA
     // =================================================
 
     map.addLayer(markers);
