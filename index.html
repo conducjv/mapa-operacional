@@ -145,16 +145,9 @@ function crearMarcadores(data){
 
    const marker = L.marker([eq.latitud,eq.longitud]);
 
-   marker.bindPopup(`
-      <h3>${eq.id || ''}</h3>
-      <b>Localidad:</b> ${eq.localidad || ''}<br>
-      <b>Sala:</b> ${eq.sala || ''}<br>
-      <b>Función:</b> ${eq.funcion || ''}<br>
-      <b>Tipo:</b> ${eq.tipo || ''}<br>
-      <b>Marca:</b> ${eq.marca || ''}<br>
-      <b>Modelo:</b> ${eq.modelo || ''}<br>
-      ${eq.doc_tec ? `<a target="_blank" href="${eq.doc_tec}">Manual</a>` : ''}
-   `);
+marker.bindPopup(
+   crearPopupEquipo(eq)
+);
 
    markers.addLayer(marker);
    markerIndex[eq.id] = marker;
