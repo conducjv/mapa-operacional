@@ -62,7 +62,7 @@ input,select{width:100%;margin-bottom:8px}
 
 <h3>Inventario</h3>
 
-<div id="inventoryTree"></div>
+<div id="equipmentList"></div>
 
 <!--
 AMPLIACIÓN FUTURA
@@ -129,19 +129,9 @@ Promise.all([
    salasGlobal = salas;
 
    cargarFiltros(equipos);
-   renderArbol(equipos);
+   renderLista(equipos);
 
    crearMarcadores(equipos);
-
-});
-.then(r=>r.json())
-.then(data=>{
-
- equiposGlobal = data;
-
- cargarFiltros(data);
- renderLista(data);
- crearMarcadores(data);
 
 });
 
