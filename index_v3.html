@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GIS Operacional</title>
+
+<!--
+=========================================================
+INDEX V2 - PREPARADO PARA:
+- Desktop + Mobile
+- Sidebar responsiva
+- Cluster
+- Filtros
+- Busca
+- Localidades
+- Salas
+- Funciones (MTR/PMP/VAL)
+- Tipos
+=========================================================
+-->
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+<style>
+body{margin:0;font-family:Arial,sans-serif}
+#map{position:absolute;top:0;right:0;bottom:0;left:320px}
+#sidebar{position:absolute;left:0;top:0;bottom:0;width:320px;background:#fff;overflow:auto;border-right:1px solid #ccc;padding:10px;z-index:1000}
+#mobileBtn{display:none;position:absolute;top:10px;left:10px;z-index:2000;padding:8px}
+input,select{width:100%;margin-bottom:8px}
+.item{cursor:pointer;padding:6px;border-bottom:1px solid #eee}
+@media(max-width:768px){
+ #sidebar{transform:translateX(-100%);transition:.3s}
+ #sidebar.open{transform:translateX(0)}
+ #map{left:0}
+ #mobileBtn{display:block}
+}
+</style>
+</head>
+<body>
+
+<button id="mobileBtn">☰ Inventario</button>
+
+<div id="sidebar">
+<h2>Inventario</h2>
+
+<!-- BUSCA -->
+<input id="searchBox" placeholder="Buscar equipo">
+
+<!-- FILTROS -->
+<select id="localidadFilter"><option value="">Todas las localidades</option></select>
+<select id="salaFilter"><option value="">Todas las salas</option></select>
+<select id="funcionFilter"><option value="">Todas las funciones</option></select>
+<select id="tipoFilter">
+  <option value="">Todos los tipos</option>
+</select>
+
+<h3>Inventario</h3>
+
+<div id="inventoryTree"></div>
+
+<!--
+AMPLIACIÓN FUTURA
+1. KPI
+2. Dashboard
+3. Mantenimiento
+4. Criticidad
+5. Estado
+-->
+</div>
+
+<div id="map"></div>
+
+<script>
+
+// =====================================================
+// CONFIGURACIÓN MAPA
+// =====================================================
+
+const map = L.map('map').setView([39.15,-0.29],11);
+
+const satellite = L.tileLayer(
+'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+{maxZoom:19}
+).addTo(map);
+
+const osm = L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{maxZoom:22}
+);
+
+L.control.layers({
+"Satélite":satellite,
+"Mapa":osm
+}).addTo(map);
+
+// =====================================================
+// CLUSTER
+// =====================================================
+
+const markers = L.markerClusterGroup({
+ spiderfyOnMaxZoom:true,
+ showCoverageOnHover:false,
+ zoomToBoundsOnClick:true,
+ disableClusteringAtZoom:22,
+ spiderfyDistanceMultiplier:2
+});
+
+const markerIndex = {};
+let equiposGlobal = [];
+let salasGlobal = [];
+
+// =====================================================
+// CARGA JSON
+// =====================================================
+
+Promise.all([
+   fetch('data/equipos.json').then(r=>r.json()),
+   fetch('data/salas.json').then(r=>r.json())
+])
+.then(([equipos,salas])=>{
+
+   equiposGlobal = equipos;
+   salasGlobal = salas;
+
+   cargarFiltros(equipos);
+   renderArbol(equipos);
+
+   crearMarcadores(equipos);
+
+});
+.then(r=>r.json())
+.then(data=>{
+
+ equiposGlobal = data;
+
+ cargarFiltros(data);
+ renderLista(data);
+ crearMarcadores(data);
+
+});
+
+// =====================================================
+// CREAR MARCADORES
+// =====================================================
+
+function crearMarcadores(data){
+
+ data.forEach(eq=>{
+
+   const marker = L.marker([eq.latitud,eq.longitud]);
+
+   marker.bindPopup(`
+      <h3>${eq.id || ''}</h3>
+      <b>Localidad:</b> ${eq.localidad || ''}<br>
+      <b>Sala:</b> ${eq.sala || ''}<br>
+      <b>Función:</b> ${eq.funcion || ''}<br>
+      <b>Tipo:</b> ${eq.tipo || ''}<br>
+      <b>Marca:</b> ${eq.marca || ''}<br>
+      <b>Modelo:</b> ${eq.modelo || ''}<br>
+      ${eq.doc_tec ? `<a target="_blank" href="${eq.doc_tec}">Manual</a>` : ''}
+   `);
+
+   markers.addLayer(marker);
+   markerIndex[eq.id] = marker;
+
+ });
+
+ map.addLayer(markers);
+}
+
+// =====================================================
+// FILTROS
+// =====================================================
+
+function cargarFiltros(data){
+
+ const localidades=[...new Set(data.map(x=>x.localidad))];
+ const salas=[...new Set(data.map(x=>x.sala))];
+ const funciones=[...new Set(data.map(x=>x.funcion))];
+
+ localidades.forEach(v=>localidadFilter.innerHTML+=`<option>${v}</option>`);
+ salas.forEach(v=>salaFilter.innerHTML+=`<option>${v}</option>`);
+ funciones.forEach(v=>funcionFilter.innerHTML+=`<option>${v}</option>`);
+}
+
+function aplicarFiltros(){
+
+ let datos=[...equiposGlobal];
+
+ if(localidadFilter.value)
+   datos=datos.filter(x=>x.localidad===localidadFilter.value);
+
+ if(salaFilter.value)
+   datos=datos.filter(x=>String(x.sala)===salaFilter.value);
+
+ if(funcionFilter.value)
+   datos=datos.filter(x=>x.funcion===funcionFilter.value);
+
+ if(searchBox.value)
+   datos=datos.filter(x=>
+      JSON.stringify(x).toLowerCase()
+      .includes(searchBox.value.toLowerCase())
+   );
+
+ renderLista(datos);
+}
+
+// =====================================================
+// LISTA INVENTARIO
+// =====================================================
+
+function renderLista(data){
+
+ equipmentList.innerHTML='';
+
+ data.forEach(eq=>{
+
+   const div=document.createElement('div');
+   div.className='item';
+
+   div.innerHTML=`
+      <b>${eq.id}</b><br>
+      ${eq.localidad}<br>
+      ${eq.tipo}
+   `;
+
+   div.onclick=()=>{
+
+      const marker=markerIndex[eq.id];
+
+      if(marker){
+
+         map.setView(marker.getLatLng(),18);
+
+         setTimeout(()=>{
+
+            marker.openPopup();
+
+         },300);
+
+      }
+
+   };
+
+   equipmentList.appendChild(div);
+
+ });
+
+}
+
+// =====================================================
+// EVENTOS
+// =====================================================
+
+searchBox.addEventListener('input',aplicarFiltros);
+localidadFilter.addEventListener('change',aplicarFiltros);
+salaFilter.addEventListener('change',aplicarFiltros);
+funcionFilter.addEventListener('change',aplicarFiltros);
+
+// =====================================================
+// MOBILE
+// =====================================================
+
+mobileBtn.addEventListener('click',()=>{
+ sidebar.classList.toggle('open');
+});
+
+// =====================================================
+// FUTURAS LOCALIDADES
+// =====================================================
+/*
+Adicionar novas localidades apenas no JSON:
+
+EB SUECA
+EB RAFELBUNYOL
+EB ALZIRA
+EB XATIVA
+EB GANDIA
+
+Os filtros serão criados automaticamente.
+*/
+
+</script>
+</body>
+</html>
