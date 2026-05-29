@@ -162,38 +162,55 @@ function crearPopupEquipo(eq){
 
    }
 
-   if(eq.foto_1){
+  // ======================================
+// FOTOS
+// ======================================
+
+if(Array.isArray(eq.fotos)){
+
+   eq.fotos.forEach((foto,i)=>{
 
       html += `
          <br>
-         <a target="_blank" href="${eq.foto_1}">
-            📷 Foto
+         <a target="_blank" href="${foto}">
+            📷 Foto ${i+1}
          </a>
       `;
 
-   }
+   });
 
-   if(eq.video_1){
+}
+
+ // ======================================
+// VIDEOS
+// ======================================
+
+if(Array.isArray(eq.videos)){
+
+   eq.videos.forEach((video,i)=>{
 
       html += `
          <br>
-         <a target="_blank" href="${eq.video_1}">
-            🎥 Video
+         <a target="_blank" href="${video}">
+            🎥 Video ${i+1}
          </a>
       `;
 
-   }
+   });
+
+}
 
    if(eq.repuestos_link){
 
-      html += `
-         <br>
-         <a target="_blank" href="${eq.repuestos_link}">
-            🔧 Repuesto
-         </a>
-      `;
+   html += `
+      <br>
+      <a target="_blank"
+         href="${eq.repuestos_link}">
+         🔧 Repuesto ${eq.repuestos || ''}
+      </a>
+   `;
 
-   }
+}
 
    return html;
 
