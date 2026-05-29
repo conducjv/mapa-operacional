@@ -134,14 +134,76 @@ Promise.all([
    crearMarcadores(equipos);
 
 });
+// =====================================================
+// POPUP EQUIPO
+// =====================================================
 
+function crearPopupEquipo(eq){
+
+   let html = `
+      <h3>${eq.id || ''}</h3>
+
+      <b>Localidad:</b> ${eq.localidad || ''}<br>
+      <b>Sala:</b> ${eq.sala || ''}<br>
+      <b>Función:</b> ${eq.funcion || ''}<br>
+      <b>Tipo:</b> ${eq.tipo || ''}<br>
+      <b>Marca:</b> ${eq.marca || ''}<br>
+      <b>Modelo:</b> ${eq.modelo || ''}<br>
+   `;
+
+   if(eq.doc_tec){
+
+      html += `
+         <br>
+         <a target="_blank" href="${eq.doc_tec}">
+            📄 Manual
+         </a>
+      `;
+
+   }
+
+   if(eq.foto_1){
+
+      html += `
+         <br>
+         <a target="_blank" href="${eq.foto_1}">
+            📷 Foto
+         </a>
+      `;
+
+   }
+
+   if(eq.video_1){
+
+      html += `
+         <br>
+         <a target="_blank" href="${eq.video_1}">
+            🎥 Video
+         </a>
+      `;
+
+   }
+
+   if(eq.repuestos_link){
+
+      html += `
+         <br>
+         <a target="_blank" href="${eq.repuestos_link}">
+            🔧 Repuesto
+         </a>
+      `;
+
+   }
+
+   return html;
+
+}
+
+ 
 // =====================================================
 // CREAR MARCADORES
 // =====================================================
 
-function crearPopupEquipo(eq){
-   ...
-}
  
 function crearMarcadores(data){
 
