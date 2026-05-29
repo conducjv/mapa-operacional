@@ -1,0 +1,92 @@
+[
+  {
+    "localidad": "EB LA MARQUESA",
+    "sala": 1,
+    "nombre": "Bombas",
+    "tipo": "",
+    "epis": [
+      "Casco",
+      "Guantes",
+      "Gafas"
+    ],
+    "riesgos": [
+      "Electricos"
+    ],
+    "documentos": [
+      {
+        "nombre": "https://grupoelecnor-my.sharepoint.com/:b:/r/personal/rrodrigues_elecnor_es/Documents/ProyectoMapa/docs/468973838-Doc-Motor-Indar-ACP-560-X6-pdf.pdf",
+        "url": "https://grupoelecnor-my.sharepoint.com/:b:/r/personal/rrodrigues_elecnor_es/Documents/ProyectoMapa/docs/468973838-Doc-Motor-Indar-ACP-560-X6-pdf.pdf"
+      }
+    ],
+    "responsable": "",
+    "observaciones": ""
+  },
+  {
+    "localidad": "EB LA MARQUESA",
+    "sala": 2,
+    "nombre": "Hipoclorito",
+    "tipo": "",
+    "epis": [
+      "Casco",
+      "Guantes",
+      "Gafas"
+    ],
+    "riesgos": [
+      "Quimicos"
+    ],
+    "documentos": [],
+    "responsable": "",
+    "observaciones": ""
+  },
+  {
+    "localidad": "EB EL PANSER",
+    "sala": 1,
+    "nombre": "Bombas",
+    "tipo": "",
+    "epis": [
+      "Casco",
+      "Guantes",
+      "Gafas"
+    ],
+    "riesgos": [
+      "Electricos"
+    ],
+    "documentos": [],
+    "responsable": "",
+    "observaciones": ""
+  },
+  {
+    "localidad": "EB EL PANSER",
+    "sala": 2,
+    "nombre": "Taller",
+    "tipo": "",
+    "epis": [
+      "Casco",
+      "Guantes",
+      "Gafas"
+    ],
+    "riesgos": [
+      "Mecanicos"
+    ],
+    "documentos": [],
+    "responsable": "",
+    "observaciones": ""
+  },
+  {
+    "localidad": "SAN DIEGO",
+    "sala": 1,
+    "nombre": "Telemando",
+    "tipo": "",
+    "epis": [
+      "Casco",
+      "Guantes",
+      "Gafas"
+    ],
+    "riesgos": [
+      "Ergonomicos"
+    ],
+    "documentos": [],
+    "responsable": "",
+    "observaciones": ""
+  }
+]
